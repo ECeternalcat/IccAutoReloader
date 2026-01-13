@@ -20,7 +20,7 @@ use windows::Win32::System::Threading::CreateMutexW;
 use windows::Win32::System::Registry::*;
 use windows::Win32::Graphics::Gdi::{GetDC, ReleaseDC, HDC};
 use windows::Win32::System::LibraryLoader::{GetModuleHandleW, GetProcAddress};
-use windows::Win32::UI::WindowsAndMessaging::{SetMenuItemInfoW, MENUITEMINFOW};
+use windows::Win32::UI::WindowsAndMessaging::{SetMenuItemInfoW, MENUITEMINFOW, MessageBoxW, MB_YESNO, MB_ICONWARNING, IDYES};
 use windows::Win32::UI::HiDpi::{SetProcessDpiAwarenessContext, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2};
 
 // --- Global State ---
@@ -190,6 +190,16 @@ fn get_str(id: &str) -> String {
             1 => "取消",
             2 => "キャンセル",
             _ => "Cancel",
+        },
+        "exit_confirm_title" => match lang {
+            1 => "确认退出",
+            2 => "終了の確認",
+            _ => "Confirm Exit",
+        },
+        "exit_confirm_msg" => match lang {
+            1 => "注意，退出后系统将不再自动加载色彩校准，是否继续？",
+            2 => "注意：終了すると、システムは自動的にキャリブレーションを読み込まなくなります。続行しますか？",
+            _ => "Warning: After exiting, the system will no longer automatically load color calibration. Continue?",
         },
         _ => id,
     };
@@ -750,7 +760,25 @@ impl SystemTrayApp {
     }
 
     fn exit(&self) {
-        nwg::stop_thread_dispatch();
+        // Show confirmation dialog before exiting
+        let title = get_str("exit_confirm_title");
+        let msg = get_str("exit_confirm_msg");
+
+        let title_wide: Vec<u16> = title.encode_utf16().chain(std::iter::once(0)).collect();
+        let msg_wide: Vec<u16> = msg.encode_utf16().chain(std::iter::once(0)).collect();
+
+        unsafe {
+            let result = MessageBoxW(
+                None,
+                PCWSTR(msg_wide.as_ptr()),
+                PCWSTR(title_wide.as_ptr()),
+                MB_YESNO | MB_ICONWARNING
+            );
+
+            if result == IDYES {
+                nwg::stop_thread_dispatch();
+            }
+        }
     }
 }
 
