@@ -8,7 +8,7 @@ A lightweight, high-performance ICC Profile Loader for Windows, written in Rust.
 - **Robust Polling**: Continuously monitors the system Gamma Ramp (default every 3 seconds). If it detects the calibration has been lost (ramp becomes linear), it automatically re-applies your profile.
 - **Silent Operation**: Runs entirely in the background. All command-line calls to `dispwin` are suppressed to prevent console window popups.
 - **Multi-language Support**: Supports English, Chinese (简体中文), and Japanese (日本語).
-- **Settings GUI**: Configurable polling interval (1–10 seconds) via a native Windows settings panel.
+- **Settings GUI**: Configurable polling interval (1–5 seconds) via a native Windows settings panel.
 - **Small Footprint**: Written in Rust with minimal dependencies and no runtime overhead.
 - **Broad Compatibility**: Supports both 32-bit (x86) and 64-bit (x64) Windows, from Windows 7 to Windows 11.
 
