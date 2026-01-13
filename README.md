@@ -94,6 +94,12 @@ cargo build --release
 rustup target add i686-pc-windows-msvc
 cargo build --release --target i686-pc-windows-msvc
 ```
+### Build Arm64
+```bash
+rustup target add aarch64-pc-windows-msvc
+cargo build --release --target aarch64-pc-windows-msvc
+```
+
 
 The output will be in `target/release/` or `target/i686-pc-windows-msvc/release/`.
 
